@@ -235,7 +235,16 @@ static inline int fb_getchar (int x)
 	    return EOF;
 	}
 
-	if (p->count = read (fd, p->buffer, p->size)) {
+	switch (gp_link[x].c_type) {
+	case PL_LOCAL:
+	    p->count = read (fd, p->buffer, p->size);
+	    break;
+	case PL_REMOTE:
+	    p->count = recv (fd, p->buffer, p->size, MSG_WAITALL);
+	    break;
+	}
+
+	if (p->count) {
 	    p->buffer[p->count] = 0;
 //	    zend_printf ("read %d bytes from fd %d: \"%s\"<br>",
 //			 p->count, x, p->buffer);
