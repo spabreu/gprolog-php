@@ -1,0 +1,9 @@
+#! /bin/sh
+
+GPLCFLAGS="--no-redef-error --no-top-level"
+EXTDIR=/usr/lib/gprolog/ext/gprolog-php
+
+exec gplc \
+  $GPLCFLAGS \
+  $@ \
+  $EXTDIR/module.o

@@ -1,0 +1,5 @@
+gprolog-php-cx (1.0-1) unstable; urgency=low
+
+  * initial packaging.
+
+ -- Salvador Abreu <spa@debian.org>  Mon, 22 Apr 2002 13:42:02 +0100

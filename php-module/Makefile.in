@@ -1,0 +1,23 @@
+# $Id$
+
+LTLIBRARY_NAME        = libgprolog.la
+LTLIBRARY_SOURCES     = gprolog.c
+LTLIBRARY_SHARED_NAME = gprolog.la
+LTLIBRARY_SHARED_LIBADD  = $(GPROLOG_SHARED_LIBADD)
+
+CONFIGFLAGS=--with-gprolog=shared
+
+ifeq ($(top_srcdir),)
+else
+include $(top_srcdir)/build/dynlib.mk
+endif
+
+realclean:
+	[ -f Makefile ] && make clean || true
+	rm -rf $(shell cat .cvsignore)
+
+configure:
+	phpize
+	./configure $(CONFIGFLAGS)
+
+.PHONY: realclean configure

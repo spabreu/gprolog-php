@@ -1,0 +1,87 @@
+#! /usr/bin/make -f
+# =============================================================================
+# debian/rules for the GNU Prolog PHP interface package.
+#
+# Written by Salvador Abreu <spa@debian.org>
+
+# This is the debhelper compatibility version to use.
+export DH_COMPAT=3
+
+variant=-cx
+basepackage=gprolog-php${variant}
+package=${basepackage}
+
+ROOT=${PWD}/debian/${package}
+INSTDIR=/usr/lib/gprolog${variant}/ext/php
+
+GPLC=gplc${variant}
+
+# == build binaries and documentation =========================================
+
+build: build-stamp${variant}
+build-stamp${variant}:
+	dh_testdir
+# -- commands to configure and build the package ------------------------------
+	(cd php-module; make -f Makefile.in configure && make)
+	(cd front-end; make variant=${variant})
+	$(GPLC) -o ${package} \
+		--no-redef-error --no-top-level \
+			front-end/php-top.o
+# -----------------------------------------------------------------------------
+	touch build-stamp
+
+
+# == clean up everything ======================================================
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+# -- commands to clean up after the build process -----------------------------
+	make -C php-module -f Makefile.in realclean
+	make -C front-end clean
+	rm -f ${package}
+# -----------------------------------------------------------------------------
+	dh_clean
+
+
+# == installation =============================================================
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs -A
+# -- commands to install the package into the staging area --------------------
+	mkdir -p ${ROOT}/usr/bin
+	mkdir -p ${ROOT}${INSTDIR}
+	install -c -m 444 front-end/php-top.o ${ROOT}${INSTDIR}/module.o
+	install -c -m 555 gplc-php ${ROOT}/usr/bin
+	install -c -m 555 ${package} ${ROOT}/usr/bin
+	make -C php-module \
+	   install EXTENSION_DIR=${ROOT}`php-config --extension-dir`
+	dh_undocumented ${package}.1
+	dh_undocumented gplc-php.1
+# -----------------------------------------------------------------------------
+#	dh_movefiles
+
+
+# == build package ============================================================
+
+binary: build install
+	dh_testdir
+	dh_testroot
+	dh_installdocs
+	dh_installexamples
+	dh_installman
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+.PHONY: build clean binary install
