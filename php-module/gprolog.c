@@ -861,27 +861,26 @@ int php_gprolog_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 	return h_index;
 	break;
 
-#ifdef 0
-    case 4: { /* usar 'host', 'port', 'tty' e 'options' */
-	zval **yyhost, **yyport, **yytty, **yyoptions;
 
-	if (zend_get_parameters_ex(4, &yyhost, &yyport, &yytty, &yyoptions) == FAILURE)
-	    zend_error(E_WARNING, "can't fetch parameters in php_gprolog_connnect.");
+/*     case 4: { /\* usar 'host', 'port', 'tty' e 'options' *\/ */
+/* 	zval **yyhost, **yyport, **yytty, **yyoptions; */
 
-	convert_to_string_ex(yyhost);
-	convert_to_string_ex(yyport);
-	convert_to_string_ex(yyoptions);
-	convert_to_string_ex(yytty);
-	host = Z_STRVAL_PP(yyhost);
-	port = Z_STRVAL_PP(yyport);
-	options = Z_STRVAL_PP(yyhost);
-	tty = Z_STRVAL_PP(yyhost);
+/* 	if (zend_get_parameters_ex(4, &yyhost, &yyport, &yytty, &yyoptions) == FAILURE) */
+/* 	    zend_error(E_WARNING, "can't fetch parameters in php_gprolog_connnect."); */
 
-	// fazer a ligacao ao servico de rede
-	zend_error(E_ERROR, "Service not available");
-    }
-	break;
-#endif
+/* 	convert_to_string_ex(yyhost); */
+/* 	convert_to_string_ex(yyport); */
+/* 	convert_to_string_ex(yyoptions); */
+/* 	convert_to_string_ex(yytty); */
+/* 	host = Z_STRVAL_PP(yyhost); */
+/* 	port = Z_STRVAL_PP(yyport); */
+/* 	options = Z_STRVAL_PP(yyhost); */
+/* 	tty = Z_STRVAL_PP(yyhost); */
+
+/* 	// fazer a ligacao ao servico de rede */
+/* 	zend_error(E_ERROR, "Service not available"); */
+/*     } */
+/* 	break; */
 
     default:
 	WRONG_PARAM_COUNT;
