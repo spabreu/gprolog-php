@@ -1,8 +1,14 @@
+gprolog-php-cx (1.0-3) unstable; urgency=low
+
+  * rebuild with newest gprolog-cx.
+
+ -- Salvador Abreu <spa@debian.org>  Sat, 22 Feb 2003 02:39:26 +0000
+
 gprolog-php-cx (1.0-2) unstable; urgency=low
 
   * rebuild with newest PHP.
 
- -- Salvador Abreu <spa@debian.org>  Wed, 19 Feb 2003 22:05:00 +0000
+ -- Salvador Abreu <spa@debian.org>  Sat, 22 Feb 2003 02:39:16 +0000
 
 gprolog-php-cx (1.0-1) unstable; urgency=low
 

@@ -146,7 +146,7 @@ ZEND_RINIT_FUNCTION(gprolog)
 	fb[i].at_eof = 0;
     }
 
-    zend_printf ("<h1>PHP pid: %d</h1>\n", getpid());
+    //    zend_printf ("<h1>PHP pid: %d</h1>\n", getpid());
 
     return SUCCESS;
 }

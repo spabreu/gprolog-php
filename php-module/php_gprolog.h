@@ -116,10 +116,3 @@ ZEND_END_MODULE_GLOBALS(gprolog)
  * c-basic-offset: 4
  * End:
  */
-
-
-
-
-
-
-
