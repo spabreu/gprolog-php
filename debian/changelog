@@ -1,3 +1,9 @@
+gprolog-php-cx (1.0-4) unstable; urgency=low
+
+  * error not being prefixed with escape character: fix.
+
+ -- Salvador Abreu <spa@debian.org>  Wed, 26 Feb 2003 09:44:14 +0000
+
 gprolog-php-cx (1.0-3) unstable; urgency=low
 
   * rebuild with newest gprolog-cx.
