@@ -71,7 +71,7 @@ php_query(GOAL, VL, Vs) :-
 	;
 	    format_to_codes(MSG, "~w~n", [ERROR]),
 	    length(MSG, LENGTH),
-	    format("error ~w ~w ~s", [LEVEL, LENGTH, MSG]),
+	    format("~cerror ~w ~w ~s", [1, LEVEL, LENGTH, MSG]),
 	    flush_output ),
 	g_assign(level, L0), !,
 	fail.
@@ -193,8 +193,11 @@ php_halt :-
 % -----------------------------------------------------------------------------
 
 % $Log$
-% Revision 1.1  2003/01/07 19:52:14  spa
-% Initial revision
+% Revision 1.2  2003/02/26 09:18:08  spa
+% Prepend escape character to error message!
+%
+% Revision 1.1.1.1  2003/01/07 19:52:14  spa
+% Initial import
 %
 
 % Local Variables:
