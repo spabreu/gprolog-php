@@ -33,6 +33,12 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <linux/limits.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+
 #include "php_gprolog.h"
 // #include "config.h"
 
@@ -785,6 +791,77 @@ int php_gprolog_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 	return h_index;
 	break;
 
+    case 3: { /* usar 'host', 'port' e 'options' */
+	zval **yyhost, **yyport, **yyoptions;
+	int sock;
+	struct sockaddr_in srvdata;
+	struct hostent *hostdata;
+	static struct in_addr saddr, *saddr_p;
+	int port_i;
+	int fd_to_kid[2], fd_from_kid[2];
+	int retval, nbytes;
+	
+
+	if (zend_get_parameters_ex(3, &yyhost, &yyport, &yyoptions) == FAILURE)
+	    zend_error(E_WARNING, "can't fetch parameters in php_gprolog_connnect.");
+
+	convert_to_string_ex(yyhost);
+	convert_to_string_ex(yyport);
+	convert_to_string_ex(yyoptions);
+	host = Z_STRVAL_PP(yyhost);
+	port = Z_STRVAL_PP(yyport);
+	port_i = atoi(port);
+	options = Z_STRVAL_PP(yyhost);
+
+	zend_printf("A ligar a %s:%d (%s)...\n", host, port_i, port);
+	// fazer a ligacao ao servico de rede
+	bzero(&srvdata, sizeof(srvdata));
+
+	srvdata.sin_family = AF_INET;
+	srvdata.sin_port = htons(port_i);
+
+	/* First try it as aaa.bbb.ccc.ddd. */
+	saddr.s_addr = inet_addr(host);
+	if (saddr.s_addr != -1) {
+	    saddr_p = &saddr;
+	}
+	else {
+	    hostdata = gethostbyname(host);
+	    if (hostdata != NULL) {
+		saddr_p = (struct in_addr *) *hostdata->h_addr_list;
+	    }
+	}
+
+	/* create the socket */
+	if ( (sock = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
+	    zend_error(E_ERROR, "Couldn't create socket.");
+	}
+
+	/* connect to remote host */
+	if ( connect(sock, (struct sockaddr *) &srvdata, sizeof(struct sockaddr_in)) < 0 ) {
+	    zend_error(E_WARNING, "Couldn't connect to remote host.");
+	    zend_error(E_ERROR, strerror(errno));
+	}
+	
+	/* duplicate the FDs */
+	h_index = get_index();
+	/*	CHECK (pipe (fd_to_kid) );
+		CHECK (pipe (fd_from_kid) );
+		
+		CHECK( dup2(fd_to_kid[0],sock) );
+		CHECK( dup2(fd_from_kid[1],sock) );
+	*/
+	
+	gp_link[h_index].pid         = 0;
+	gp_link[h_index].fd_to_kid   = sock;
+	gp_link[h_index].fd_from_kid = sock;
+	gp_link[h_index].c_type      = PL_REMOTE;
+
+    }
+	return h_index;
+	break;
+
+#ifdef 0
     case 4: { /* usar 'host', 'port', 'tty' e 'options' */
 	zval **yyhost, **yyport, **yytty, **yyoptions;
 
@@ -804,6 +881,7 @@ int php_gprolog_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 	zend_error(E_ERROR, "Service not available");
     }
 	break;
+#endif
 
     default:
 	WRONG_PARAM_COUNT;
