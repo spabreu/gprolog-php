@@ -1,3 +1,34 @@
+gprolog-php-cx (1.0-10) unstable; urgency=low
+
+  * outra igual à 1.0-9.
+
+ -- Salvador Abreu <spa@di.uevora.pt>  Sat, 11 Oct 2003 20:10:10 +0100
+
+gprolog-php-cx (1.0-9) unstable; urgency=low
+
+  * php-module/gprolog.c: treat sockets different from pipes (recv instead
+    of read)
+
+ -- Salvador Abreu <spa@di.uevora.pt>  Sat, 11 Oct 2003 18:03:32 +0100
+
+gprolog-php-cx (1.0-8) unstable; urgency=low
+
+  * rebuild with gprolog-cx 1.2.18
+
+ -- Salvador Abreu <spa@di.uevora.pt>  Sat,  2 Aug 2003 16:54:03 +0100
+
+gprolog-php-cx (1.0-7) unstable; urgency=low
+
+  * rebuild with gprolog-cx 1.2.13-5
+
+ -- Salvador Abreu <spa@debian.org>  Thu, 10 Apr 2003 10:20:56 +0100
+
+gprolog-php-cx (1.0-6) unstable; urgency=low
+
+  * rebuild with new gprolog-cx
+
+ -- Salvador Abreu <spa@debian.org>  Mon,  7 Apr 2003 01:14:36 +0100
+
 gprolog-php-cx (1.0-5) unstable; urgency=low
 
   * Output strings using using quotes whenever needed.

@@ -516,7 +516,14 @@ int send_to_prolog (INTERNAL_FUNCTION_PARAMETERS, int index, char *command)
     if (php_gprolog_debug & 1)
 	zend_printf("send_to_prolog(%d, <tt>%s</tt>)<br>", index, command);
 
-    CHECK (write (gp_link[index].fd_to_kid, command, strlen(command)));
+    switch (gp_link[index].c_type) {
+    case PL_REMOTE:
+	CHECK (send (gp_link[index].fd_to_kid, command, strlen(command), 0));
+	break;
+    case PL_LOCAL:
+        CHECK (write (gp_link[index].fd_to_kid, command, strlen(command)));
+	break;
+    }
     return 1;
 }
 /* }}} */
