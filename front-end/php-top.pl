@@ -172,7 +172,7 @@ php_show([V>N|Vs], LNs) :-
 	php_show(Vs, LNs).
 php_show([V>N|Vs], LNs) :-
 	!,
-	write_term_to_codes(STRING, V, []),
+	write_term_to_codes(STRING, V, [quoted(true)]),
 	length(STRING, L),
 	format("var ~w string ~w ~s~n", [N, L, STRING]),
 	flush_output,
@@ -193,6 +193,9 @@ php_halt :-
 % -----------------------------------------------------------------------------
 
 % $Log$
+% Revision 1.3  2003/04/02 09:05:00  spa
+% Output strings with quotes whenever necessary.
+%
 % Revision 1.2  2003/02/26 09:18:08  spa
 % Prepend escape character to error message!
 %
