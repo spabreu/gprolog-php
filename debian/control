@@ -7,6 +7,6 @@ Build-Depends: gprolog (>= 1.2.11), php4-dev, debhelper, autoconf
 
 Package: gprolog-php-cx
 Architecture: any
-Depends: ${shlibs:Depends}, gprolog-cx (=1.2.13-3), php4
+Depends: ${shlibs:Depends}, gprolog-cx (>=1.2.13-3), php4
 Conflicts:
 Description: PHP interface to GNU Prolog.
