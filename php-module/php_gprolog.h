@@ -58,10 +58,13 @@ ZEND_FUNCTION(pl_show_table);
 ZEND_FUNCTION(pl_debug);
 
 
+typedef enum {PL_LOCAL, PL_REMOTE} pl_conn_type;
+
 typedef struct _php_gprolog_result_handle {
     int pid;
     int fd_to_kid, fd_from_kid;
     int ready;
+    pl_conn_type c_type;
 } gprolog_result_handle;
 
 #define GPROLOG_MAX_LINKS 16
