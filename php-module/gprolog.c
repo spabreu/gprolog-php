@@ -768,6 +768,7 @@ int php_gprolog_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 		 * ==============
 		 */
 		gp_link[h_index].pid = childpid;
+                gp_link[h_index].c_type = PL_LOCAL;
 		close(fd_to_kid[0]);
 		close(fd_from_kid[1]);
 		gp_link[h_index].fd_to_kid = fd_to_kid[1];
@@ -813,7 +814,7 @@ int php_gprolog_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 	port_i = atoi(port);
 	options = Z_STRVAL_PP(yyhost);
 
-	zend_printf("A ligar a %s:%d (%s)...\n", host, port_i, port);
+        //	zend_printf("A ligar a %s:%d (%s)...\n", host, port_i, port);
 	// fazer a ligacao ao servico de rede
 	bzero(&srvdata, sizeof(srvdata));
 
@@ -839,7 +840,7 @@ int php_gprolog_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 
 	/* connect to remote host */
 	if ( connect(sock, (struct sockaddr *) &srvdata, sizeof(struct sockaddr_in)) < 0 ) {
-	    zend_error(E_WARNING, "Couldn't connect to remote host.");
+            //	    zend_error(E_WARNING, "Couldn't connect to remote host.");
 	    zend_error(E_ERROR, strerror(errno));
 	}
 	
@@ -915,7 +916,9 @@ static void close_and_kill (INTERNAL_FUNCTION_PARAMETERS, int index)
     close(gp_link[index].fd_to_kid);
     close(gp_link[index].fd_from_kid);
     //    CHECK (kill(gp_link[index].pid, SIGTERM));
-    CHECK (wait(&status) );
+    if (gp_link[index].c_type == PL_LOCAL) {
+        CHECK (wait(&status) );
+    }
     gp_link[index].ready = 0;
     gp_link[index].pid = 0;
 }
