@@ -814,7 +814,7 @@ int php_gprolog_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 	port_i = atoi(port);
 	options = Z_STRVAL_PP(yyhost);
 
-        //	zend_printf("A ligar a %s:%d (%s)...\n", host, port_i, port);
+	//	zend_printf("A ligar a %s:%d (%s)...\n", host, port_i, port);
 	// fazer a ligacao ao servico de rede
 	bzero(&srvdata, sizeof(srvdata));
 
@@ -832,6 +832,8 @@ int php_gprolog_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
 		saddr_p = (struct in_addr *) *hostdata->h_addr_list;
 	    }
 	}
+
+	srvdata.sin_addr.s_addr = saddr_p->s_addr;
 
 	/* create the socket */
 	if ( (sock = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
