@@ -1,3 +1,10 @@
+gprolog-php-cx (1.0-11) unstable; urgency=low
+
+  * gprolog.c, php_gprolog.h: compile with more recent PHP4 versions
+    (patch by Tiago...).
+
+ -- Salvador Abreu <spa@debian.org>  Mon,  2 May 2005 15:31:01 +0100
+
 gprolog-php-cx (1.0-10) unstable; urgency=low
 
   * outra igual à 1.0-9.
