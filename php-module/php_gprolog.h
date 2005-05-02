@@ -90,23 +90,23 @@ ZEND_BEGIN_MODULE_GLOBALS(gprolog)
     int                   gpg_gprolog_debug;
 ZEND_END_MODULE_GLOBALS(gprolog)
 
-#define fb      GPROLOGG(gpg_fb)
-#define gp_link GPROLOGG(gpg_link)
-#define php_gprolog_debug GPROLOGG(gpg_gprolog_debug)
+#define fb      GPROLOG_G(gpg_fb)
+#define gp_link GPROLOG_G(gpg_link)
+#define php_gprolog_debug GPROLOG_G(gpg_gprolog_debug)
 
 
 /* In every function that needs to use variables in php_gprolog_globals,
    do call GPROLOGLS_FETCH(); after declaring other variables used by
-   that function, and always refer to them as GPROLOGG(variable).
+   that function, and always refer to them as GPROLOG_G(variable).
    You are encouraged to rename these macros something shorter, see
    examples in any other php module directory.
 */
 
 #ifdef ZTS
-#define GPROLOGG(v) (gprolog_globals->v)
-#define GPROLOGLS_FETCH() php_gprolog_globals *gprolog_globals = ts_resource(gprolog_globals_id)
+#define GPROLOG_G(v) TSRMG(gprolog_globals_id, zend_gprolog_globals *, v)
+#define GPROLOGLS_FETCH() TSRMLS_FETCH()
 #else
-#define GPROLOGG(v) (gprolog_globals.v)
+#define GPROLOG_G(v) (gprolog_globals.v)
 #define GPROLOGLS_FETCH()
 #endif
 

@@ -104,6 +104,29 @@ ZEND_GET_MODULE(gprolog)
 #endif
 
 
+static void php_gprolog_init_globals(zend_gprolog_globals *gprolog_globals)
+{
+
+	int i;
+
+	for (i=0; i<GPROLOG_MAX_LINKS; ++i) {
+	    gprolog_globals->gpg_link[i].pid = 0;
+	    gprolog_globals->gpg_link[i].ready = 0;
+	    gprolog_globals->gpg_link[i].fd_to_kid = 0;
+	    gprolog_globals->gpg_link[i].fd_from_kid = 0;
+	}
+	
+	for (i=0; i<256; ++i) {
+	    gprolog_globals->gpg_fb[i].buffer = 0;
+	    gprolog_globals->gpg_fb[i].next = 0;
+	    gprolog_globals->gpg_fb[i].qnext = 0;
+	    gprolog_globals->gpg_fb[i].size = 0;
+	    gprolog_globals->gpg_fb[i].count = 0;
+	    gprolog_globals->gpg_fb[i].at_eof = 0;
+	}
+	
+}
+
 /* Remove comments and fill if you need to have entries in php.ini
 PHP_INI_BEGIN()
 PHP_INI_END()
@@ -112,9 +135,13 @@ PHP_INI_END()
 
 ZEND_MINIT_FUNCTION(gprolog)
 {
+
+    ZEND_INIT_MODULE_GLOBALS(gprolog, php_gprolog_init_globals, NULL);
+
     /* Remove comments if you have entries in php.ini
        REGISTER_INI_ENTRIES();
     */
+
     return SUCCESS;
 }
 
@@ -131,27 +158,7 @@ ZEND_MSHUTDOWN_FUNCTION(gprolog)
 /* Remove if there's nothing to do at request start */
 ZEND_RINIT_FUNCTION(gprolog)
 {
-    int i;
-    GPROLOGLS_FETCH();
-
-    php_gprolog_debug = 0;
-
-    for (i=0; i<GPROLOG_MAX_LINKS; ++i) {
-	gp_link[i].pid = 0;
-	gp_link[i].ready = 0;
-	gp_link[i].fd_to_kid = 0;
-	gp_link[i].fd_from_kid = 0;
-    }
-
-    for (i=0; i<256; ++i) {
-	fb[i].buffer = 0;
-	fb[i].next = 0;
-	fb[i].qnext = 0;
-	fb[i].size = 0;
-	fb[i].count = 0;
-	fb[i].at_eof = 0;
-    }
-
+  
     //    zend_printf ("<h1>PHP pid: %d</h1>\n", getpid());
 
     return SUCCESS;
@@ -184,6 +191,8 @@ ZEND_MINFO_FUNCTION(gprolog)
 int get_index()
 {
     int i=1;
+
+    GPROLOGLS_FETCH();
 
     while((gp_link[i].pid != 0) && (i<GPROLOG_MAX_LINKS + 1))
 	i++;
@@ -286,6 +295,8 @@ static inline void fb_skiptoeol (int x)
 {
     int c;
 
+    GPROLOGLS_FETCH();
+
     for (c = fb_getchar(x); c != EOF && c != '\n'; c = fb_getchar(x))
 	;
     if (php_gprolog_debug & 2)
@@ -296,6 +307,8 @@ static inline char *fb_getline (int x, char *space)
 {
     char *p = space;
     int c;
+
+    GPROLOGLS_FETCH();
 
     fb_skipblanks (x);
     while (c != EOF && c != '\n') {
@@ -312,6 +325,8 @@ static inline char *fb_getword (int x, char *space)
 {
     register char *p = space;
     int c;
+
+    GPROLOGLS_FETCH();
 
     fb_skipblanks (x);
     c = fb_getchar (x);
@@ -340,7 +355,6 @@ int wait_for_prolog_ready (INTERNAL_FUNCTION_PARAMETERS, int index)
 {
     char buffer[FB_BUFFER_SIZE], *p = buffer;
     int  nbytes = 0, c;
-    GPROLOGLS_FETCH();
 
     if (php_gprolog_debug & 1)
 	zend_printf("wait_for_prolog_ready(%d)<br>", index);
@@ -395,7 +409,6 @@ int parse_prolog(INTERNAL_FUNCTION_PARAMETERS, int index)
     zval *zvalue;
     char status[128], varname[128], type[128], value[128];
     int i, j, nbytes;
-    GPROLOGLS_FETCH();
 
     if (php_gprolog_debug & 8)
 	zend_printf ("parse_prolog(%d) called<br>\n", index);
@@ -511,7 +524,6 @@ int parse_prolog(INTERNAL_FUNCTION_PARAMETERS, int index)
 
 int send_to_prolog (INTERNAL_FUNCTION_PARAMETERS, int index, char *command)
 {
-    GPROLOGLS_FETCH();
 
     if (php_gprolog_debug & 1)
 	zend_printf("send_to_prolog(%d, <tt>%s</tt>)<br>", index, command);
@@ -542,7 +554,6 @@ int pl_qx (INTERNAL_FUNCTION_PARAMETERS, int *indexp, int consume_more)
     int index;
     char *query, *options = 0, *oprefix, *osuffix, *command, *consume;
     int length;
-    GPROLOGLS_FETCH();
 
     switch(ZEND_NUM_ARGS()) {
     case 2:
@@ -609,7 +620,6 @@ int pl_qx (INTERNAL_FUNCTION_PARAMETERS, int *indexp, int consume_more)
 ZEND_FUNCTION (pl_query)
 {
     int index;
-    GPROLOGLS_FETCH();
 
     if (php_gprolog_debug & 1) {
 	zend_printf("pl_query()<br>");
@@ -645,7 +655,6 @@ ZEND_FUNCTION (pl_query_all)
 ZEND_FUNCTION(pl_query_single)
 {
     int index;
-    GPROLOGLS_FETCH();
 
     if (php_gprolog_debug & 1) {
 	zend_printf("pl_query_single()<br>");
@@ -669,7 +678,6 @@ ZEND_FUNCTION(pl_more)
 {
     zval **zindex;
     int index;
-    GPROLOGLS_FETCH();
 
     if (php_gprolog_debug & 1) {
 	zend_printf("pl_more()<br>");
@@ -702,7 +710,6 @@ ZEND_FUNCTION(pl_more)
 ZEND_FUNCTION (pl_done)
 {
     int index;
-    GPROLOGLS_FETCH();
 
     if (php_gprolog_debug & 1) {
 	zend_printf("pl_done()<br>");
@@ -728,7 +735,6 @@ int php_gprolog_connect(INTERNAL_FUNCTION_PARAMETERS, int persistent)
     char *path=0, *args=0, *host=0, *port=0, *options=0, *tty=0;
     pid_t childpid;
     int i, h_index;
-    GPROLOGLS_FETCH();
 
     h_index=0;
     switch(ZEND_NUM_ARGS()) {
@@ -927,7 +933,6 @@ ZEND_FUNCTION(pl_open)
 static void close_and_kill (INTERNAL_FUNCTION_PARAMETERS, int index)
 {
     int status;
-    GPROLOGLS_FETCH();
 
     send_to_prolog (INTERNAL_FUNCTION_PARAM_PASSTHRU, index, "quit\n");
 
@@ -954,7 +959,6 @@ ZEND_FUNCTION(pl_close)
     zval **yyindex;
     int index;
     char closebuff[7];
-    GPROLOGLS_FETCH();
 
     switch(ZEND_NUM_ARGS()) {
     case 1:
@@ -988,7 +992,6 @@ ZEND_FUNCTION(pl_close)
 ZEND_FUNCTION(pl_debug)
 {
     zval **yyindex;
-    GPROLOGLS_FETCH();
 
     if (zend_get_parameters_ex (1, &yyindex) == FAILURE)
 	RETURN_FALSE;
@@ -1005,7 +1008,6 @@ ZEND_FUNCTION(pl_debug)
 ZEND_FUNCTION(pl_show_table)
 {
     int i;
-    GPROLOGLS_FETCH();
 
     zend_printf("Tabela de Processos <BR>");
     zend_printf("=================== <BR>");
