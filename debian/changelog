@@ -1,3 +1,16 @@
+gprolog-php-cx (1.0-13) unstable; urgency=low
+
+  * allow for rebuilds with either php4 or php5.
+  * update standards-version.
+
+ -- Salvador Abreu <spa@debian.org>  Mon, 24 Jul 2006 16:10:20 +0100
+
+gprolog-php-cx (1.0-12) unstable; urgency=low
+
+  * rebuild w/ new php4.
+
+ -- Salvador Abreu <spa@debian.org>  Tue,  3 Jan 2006 08:37:09 +0000
+
 gprolog-php-cx (1.0-11) unstable; urgency=low
 
   * gprolog.c, php_gprolog.h: compile with more recent PHP4 versions
